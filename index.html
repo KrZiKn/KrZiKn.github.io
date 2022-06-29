@@ -1,7 +1,140 @@
-<!DOCTYPE html>
-<html>
-    <body>
-        <h1>Hello World</h1>
-        <h2>aaaaaaaaaaaaa</h2>
-    </body>
+<html lang="ja">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<title>Spoken Dialog by Javascript</title>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=o9iWOHmR0CFd1LLhO86EApHRFLUF14HXIxhTpnQkubpx1K6j5yS5ISwifREYNbqDlmlxg2lB0oJoFcHaXwq4GbpYf46XPr3cw5ZgKQuDFm7feLizDjIT6tk5DtWF9vp_JpfL9E1hTJeEvfzSmKxMi7zW-2jPWPMkJAsG5ZokZqAypI1eAEKDEfSkMS1I0kRUIeU8UpaFHGePWzoFmGUrz6wErHlpgfffzPY5rtZDbKo" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9tb29kbGUyMDIyLndha2F5YW1hLXUuYWMuanAvMjAyMi9wbHVnaW5maWxlLnBocC81MzU1L2Fzc2lnbnN1Ym1pc3Npb25fZmlsZS9zdWJtaXNzaW9uX2ZpbGVzLzMwOTg5LzA2X3Nwb2tlbl9kaWFsb2cuaHRtbD9mb3JjZWRvd25sb2FkPTE"/></head>
+<body>
+
+<h1>課題：音声対話</h1>
+
+<p>
+<button id="startButton">start</button>
+<button id="stopButton">stop</button>
+</p>
+
+<p>
+<div id="resultOutput"></div>
+</p>
+
+<script>
+// 応答の定義（ハッシュ）    
+var response = {
+    "あなた,誰":["わたしはアレクサではありません,自動音声対話シオンです"],
+    "何歳":["え、わたし、何歳にみえますか"],
+    "元気,気分":["元気ですよー"],
+    "好きな,食べ物は":["焼肉です"],
+    "しゃべった,話した":["私、お話するの好きなんですよ、もっとお話ししましょ"],
+    "今日,天気":["今日は雨です、わたし、雨にがてなんですよね、調子が出ませーん"],
+    "怖い,うわー,きゃー":["安心してください、食べたりしませんから"],
+    "どこから":["私ははるかかなたの銀河系から来ました。宇宙船で来たのですが、長時間座っているとさすがの私でも腰が痛いです"],
+    "和歌山,天気": ["和歌山県の天気予報を表示します", "https://weather.yahoo.co.jp/weather/jp/30/"],
+    "出かけたい,和歌山周辺": ["白浜がおすすめです、私パンダみたいです　ここ連れて行ってください", "https://www.aws-s.com/animals/panda/"]
+};
+
+// ウエイクワードの定義
+var wake_word = "OK.*コンピューター";
+
+const startButton = document.querySelector('#startButton'); // 開始ボタン
+const stopButton = document.querySelector('#stopButton'); // 停止ボタン
+const resultOutput = document.querySelector('#resultOutput'); // 結果出力エリア
+
+if (!'SpeechSynthesisUtterance' in window) {
+    alert("あなたのブラウザはSpeech Synthesis APIに未対応です。");
+}
+const tts = new SpeechSynthesisUtterance(); // TTSインスタンスを生成
+//tts.text = textForm.value; // テキストを設定
+tts.lang = "ja-JP"; // 言語(日本語)、英語の場合はen-US
+tts.rate = 1.0; // 速度
+tts.pitch = 1.0; // 声の高さ
+tts.volume = 1.0; // 音量
+
+SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
+if (!'SpeechRecognition' in window) {
+    alert("あなたのブラウザはSpeech Recognition APIに未対応です。");
+}
+
+const asr = new SpeechRecognition(); // ASRインスタンスを生成
+asr.lang = "ja-JP"; // 言語（日本語）
+asr.interimResults = true; // 途中結果出力をオン
+asr.continuous = true; // 継続入力をオン
+
+let output = ''; // 出力
+let output2 = ''; // 出力
+
+// 認識結果が出力されたときのイベントハンドラ
+asr.onresult = function(event){
+    let transcript = event.results[event.resultIndex][0].transcript; // 結果文字列
+    let transcript_previous = null; // 結果文字列（ひとつ前）
+    
+    if(event.resultIndex > 0){
+        transcript_previous = event.results[event.resultIndex - 1][0].transcript;
+    }
+
+    let output_not_final = '';
+    if (event.results[event.resultIndex].isFinal) { // 結果が確定（Final）のとき
+        if(new RegExp(wake_word).test(transcript_previous)){
+            asr.abort(); // 音声認識を停止
+            
+            let answer;
+            let ret;
+            let webpage;
+            
+            let keys = Object.keys(response);
+            keys.forEach(function(key) {
+                let flag = true;
+                console.log(transcript);
+                key.split(',').forEach(function(word) {              
+                    let pattern = new RegExp(word);
+                    let flag_test = pattern.test(transcript); // マッチしたらtrue, しなかったらfalse
+                    flag = flag && flag_test; // 両方trueならtrue
+                    console.log(pattern + '+' + ':' + flag_test);
+                    //flag = flag && new RegExp(word).test(transcript);
+                });
+
+                if(flag){
+                    ret = response[key];
+                    answer = ret[0];
+                    webpage = ret[1];
+                    console.log(key + " : " + answer);
+                }
+            });
+            
+            if(typeof ret == 'undefined'){
+	            ret = "ごめんなさい。わかりません。";
+    	    }
+            
+            output += transcript + "<=" + answer +'<br>'; //出力に認識結果と解答を格納
+	
+            tts.text = answer;
+            // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
+            tts.onend = function(event){
+                if(typeof webpage != 'undefined'){
+                    window.open(webpage);
+                } 
+                asr.start(); // 音声認識を再開
+            }
+
+            speechSynthesis.speak(tts); // 再生
+        }
+    } else { // 結果がまだ未確定のとき
+        output_not_final = '<span style="color:#ddd;">' + transcript + '</span>';
+    }
+    resultOutput.innerHTML = output + output_not_final ;
+}
+
+// 開始ボタンのイベントハンドラ
+startButton.addEventListener('click', function() {
+    asr.start();
+})
+
+// 停止ボタンのイベントハンドラ
+stopButton.addEventListener('click', function() {
+    asr.stop();
+})
+</script>
+
+</body>
 </html>
