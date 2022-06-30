@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <meta http-equiv="Content-Script-Type" content="text/javascript">
+<link rel="stylesheet" type="text/css" href="stylesheet.css">
 <title>Spoken Dialog by Javascript</title>
 <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=o9iWOHmR0CFd1LLhO86EApHRFLUF14HXIxhTpnQkubpx1K6j5yS5ISwifREYNbqDlmlxg2lB0oJoFcHaXwq4GbpYf46XPr3cw5ZgKQuDFm7feLizDjIT6tk5DtWF9vp_JpfL9E1hTJeEvfzSmKxMi7zW-2jPWPMkJAsG5ZokZqAypI1eAEKDEfSkMS1I0kRUIeU8UpaFHGePWzoFmGUrz6wErHlpgfffzPY5rtZDbKo" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9tb29kbGUyMDIyLndha2F5YW1hLXUuYWMuanAvMjAyMi9wbHVnaW5maWxlLnBocC81MzU1L2Fzc2lnbnN1Ym1pc3Npb25fZmlsZS9zdWJtaXNzaW9uX2ZpbGVzLzMwOTg5LzA2X3Nwb2tlbl9kaWFsb2cuaHRtbD9mb3JjZWRvd25sb2FkPTE"/></head>
 <body>
@@ -31,7 +32,7 @@ var response = {
     "怖い,うわー,きゃー":["安心してください、食べたりしませんから"],
     "どこから":["私ははるかかなたの銀河系から来ました。宇宙船で来たのですが、長時間座っているとさすがの私でも腰が痛いです"],
     "和歌山,天気": ["和歌山県の天気予報を表示します", "https://weather.yahoo.co.jp/weather/jp/30/"],
-    "出かけたい,和歌山周辺": ["白浜がおすすめです、私パンダみたいです　ここ連れて行ってください", "https://www.aws-s.com/animals/panda/"]
+    "でかけたい,和歌山周辺": ["白浜がおすすめです、私パンダみたいです　ここ連れて行ってください", "https://www.aws-s.com/animals/panda/"]
 };
 
 // ウエイクワードの定義
@@ -62,7 +63,6 @@ asr.interimResults = true; // 途中結果出力をオン
 asr.continuous = true; // 継続入力をオン
 
 let output = ''; // 出力
-let output2 = ''; // 出力
 
 // 認識結果が出力されたときのイベントハンドラ
 asr.onresult = function(event){
