@@ -185,7 +185,7 @@ asr.onresult = function(event){
 
 // 開始ボタンのイベントハンドラ
 startButton.addEventListener('click', function() {
-    var greeting = "気づいてくださり";
+    var greeting = "気づいてくださり、ありがとうございます。私はリンと言います。私、自己紹介がよくへんって言われるのですが、どのあたりがへんなのか分からないんですよね。";
     tts.text = greeting;
     speechSynthesis.speak(tts); // 再生
     asr.start();
