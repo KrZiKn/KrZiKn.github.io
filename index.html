@@ -9,11 +9,16 @@
 <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=o9iWOHmR0CFd1LLhO86EApHRFLUF14HXIxhTpnQkubpx1K6j5yS5ISwifREYNbqDlmlxg2lB0oJoFcHaXwq4GbpYf46XPr3cw5ZgKQuDFm7feLizDjIT6tk5DtWF9vp_JpfL9E1hTJeEvfzSmKxMi7zW-2jPWPMkJAsG5ZokZqAypI1eAEKDEfSkMS1I0kRUIeU8UpaFHGePWzoFmGUrz6wErHlpgfffzPY5rtZDbKo" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9tb29kbGUyMDIyLndha2F5YW1hLXUuYWMuanAvMjAyMi9wbHVnaW5maWxlLnBocC81MzU1L2Fzc2lnbnN1Ym1pc3Npb25fZmlsZS9zdWJtaXNzaW9uX2ZpbGVzLzMwOTg5LzA2X3Nwb2tlbl9kaWFsb2cuaHRtbD9mb3JjZWRvd25sb2FkPTE"/></head>
 <body>
 
-<h1>課題：音声対話</h1>
+<h1>音声対話システム　リン</h1>
+<div class="face" id="changeface">
+<img class="image" src="face0.png" alt="チラッ">
+<img class="image" src="face3.png" alt="チーン">
+</div>
 
 <p>
-<button id="startButton">start</button>
-<button id="stopButton">stop</button>
+<button id="startButton">話しかける</button>
+
+<button id="stopButton">やめる</button>
 </p>
 
 <p>
@@ -23,8 +28,8 @@
 <script>
 // 応答の定義（ハッシュ）    
 var response = {
-    "あなた,誰":["わたしはアレクサではでし,対話システム　リンでし"],
-    "誰":["わたしはアレクサではないでし,対話システム　リンでし"],
+    "あなた,誰":["わたしはアレクサではないでし,対話システム　リンでし。"],
+    "誰":["わたしはアレクサではないでし。対話システム　リンでし。覚えておいてほしいでし。"],
     "名前":["わたしはアレクサではないでし,対話システム　リンでし"],
     "何歳":["え、わたし、何歳にみえますか"],
     "気分":["元気ですよー"],
@@ -34,9 +39,9 @@ var response = {
     "怖い,うわー,きゃー":["安心してください、食べたりしませんから"],
     "どこから":["私ははるかかなたの銀河系から来ました。宇宙船で来たのですが、長時間座っているとさすがの私でも腰が痛いです"],
     "和歌山,天気": ["和歌山県の天気予報を表示します", "https://weather.yahoo.co.jp/weather/jp/30/"],
-    "でかけたい,和歌山周辺": ["白浜がおすすめです、私パンダみたいです　ここ連れて行ってください", "https://www.aws-s.com/animals/panda/"],
+    "でかけたい,和歌山": ["白浜がおすすめです、私パンダみたいです　ここ連れて行ってください", "https://www.aws-s.com/animals/panda/"],
     "だってさ": ["教えてくれてありがとうございまし"],
-    "だそうです": ["教えてくれてありがとうございまし"],
+    "だそうです": ["教えてくれてありがとうございまし"]
 };
 
 // ウエイクワードの定義
@@ -142,8 +147,8 @@ asr.onresult = function(event){
                             resultOutput.innerHTML = output;
                             speechSynthesis.speak(tts); // 再生
                         } else {
-                            answer = "わたし、分かりません。ヤフーで検索してください";
-                            webpage = "https://www.yahoo.co.jp/";
+                            answer = "わたし、分かりません。ヤフーで検索して教えてください";
+                            webpage = "https://search.yahoo.co.jp/search?p=" + transcript;
                             window.open(webpage);
                             tts.text = answer;
                             // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
@@ -180,7 +185,7 @@ asr.onresult = function(event){
 
 // 開始ボタンのイベントハンドラ
 startButton.addEventListener('click', function() {
-    var greeting = "気づいてくださり、ありがとうございます。私はリンと言います。私、自己紹介がよくへんって言われるのですが、どのあたりがへんなのか分からないんですよね。";
+    var greeting = "気づいてくださり";
     tts.text = greeting;
     speechSynthesis.speak(tts); // 再生
     asr.start();
@@ -189,6 +194,9 @@ startButton.addEventListener('click', function() {
 // 停止ボタンのイベントハンドラ
 stopButton.addEventListener('click', function() {
     asr.stop();
+    var seeyou = "どこか行っちゃうんですね、寂しいです。またお話ししてくださいね。";
+    tts.text = seeyou;
+    speechSynthesis.speak(tts);
 })
 </script>
 <p>
