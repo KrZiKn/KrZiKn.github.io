@@ -11,7 +11,9 @@ h1{
 
 #stopButton{
     background-color: blue;
-
+        border-radius: 20px;
+    border-color: blue;
+    color: #FFF;
 }
 
 .face {
