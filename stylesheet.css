@@ -7,7 +7,6 @@ h1{
     border-radius: 20px;
     border-color: red;
     color: #FFF;
-    outline: none;
 }
 
 #stopButton{
@@ -15,7 +14,6 @@ h1{
     border-radius: 20px;
     border-color: blue;
     color: #FFF;
-    outline: none;
 }
 
 .face {
