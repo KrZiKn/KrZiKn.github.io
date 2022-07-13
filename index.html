@@ -10,9 +10,10 @@
 <body>
 
 <h1>音声対話システム　リン</h1>
-<div class="face" id="changeface">
-<img class="image" src="face0.png" alt="チラッ">
-<img class="image" src="face3.png" alt="チーン">
+
+<div class="face">
+<img class="image" id="image_place" src="face0.png" alt="チラッ">
+<img class="image" id="image_place2" src="face3.png" alt="チーン">
 </div>
 
 <p>
@@ -185,6 +186,11 @@ asr.onresult = function(event){
 
 // 開始ボタンのイベントハンドラ
 startButton.addEventListener('click', function() {
+    let img_place = document.getElementById("image_place");
+    img_place.src = "face2.png";
+    let img_place2 = document.getElementById("image_place2");
+    img_place2.src = "face1.png";
+    
     var greeting = "気づいてくださり、ありがとうございます。私はリンと言います。私、自己紹介がよくへんって言われるのですが、どのあたりがへんなのか分からないんですよね。";
     tts.text = greeting;
     speechSynthesis.speak(tts); // 再生
@@ -193,6 +199,11 @@ startButton.addEventListener('click', function() {
 
 // 停止ボタンのイベントハンドラ
 stopButton.addEventListener('click', function() {
+    img_place = document.getElementById("image_place");
+    img_place.src = "face0.png";
+    img_place2 = document.getElementById("image_place2");
+    img_place2.src = "face3.png";
+    
     asr.stop();
     var seeyou = "どこか行っちゃうんですね、寂しいです。またお話ししてくださいね。";
     tts.text = seeyou;
